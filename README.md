@@ -39,6 +39,7 @@ Before starting, document the following:
 - Ubuntu 24.04 LTS Server ARM64 ISO
 - Download from: https://ubuntu.com/download/server/arm
 
+## NOTE: These are example size you can choose sizes based on your requirements 
 ### VM Specifications
 - **Master:** 6 vCPU, 16GB RAM, 50GB Disk
 - **Worker1:** 6 vCPU, 32GB RAM, 100GB Disk

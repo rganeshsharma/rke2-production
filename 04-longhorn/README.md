@@ -77,7 +77,7 @@ helm repo update
 3. Use the following commands to create the `longhorn-system` namespace first, then install the Longhorn chart.
 ```bash
 kubectl create namespace longhorn-system
-helm install longhorn longhorn/longhorn --namespace longhorn-system
+helm install longhorn longhorn/longhorn --namespace longhorn-system -f values-longhorn.yaml
 ```
 
 ## Uninstallation
@@ -96,7 +96,7 @@ kubectl delete namespace longhorn-system
 ```bash
 # Create a basic auth file auth. It’s important the file generated is named auth (actually - that the secret has a key data.auth), otherwise the Ingress returns a 503.
 
-USER=ganesh; PASSWORD=P@ssw0rd@123; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
+USER=admin; PASSWORD=P@ssw0rd@123; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
 
 # Create a secret:
 kubectl -n longhorn-system create secret generic basic-auth --from-file=auth
@@ -110,26 +110,27 @@ metadata:
   name: longhorn-ingress
   namespace: longhorn-system
   annotations:
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
     # type of authentication
     nginx.ingress.kubernetes.io/auth-type: basic
     # prevent the controller from redirecting (308) to HTTPS
-    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     # name of the secret that contains the user/password definitions
     nginx.ingress.kubernetes.io/auth-secret: basic-auth
     # message to display with an appropriate context why the authentication is required
-    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
     # custom max body size for file uploading like backing image uploading
     nginx.ingress.kubernetes.io/proxy-body-size: 10000m
     # Important: Rewrite the path to remove /longhorn prefix
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - pathType: ImplementationSpecific
-        path: /longhorn(/|$)(.*)
+      - pathType: Prefix
+        path: /longhorn
         backend:
           service:
             name: longhorn-frontend

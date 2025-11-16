@@ -1321,7 +1321,7 @@ console:
     path: /
     ## @param console.ingress.pathType Ingress path type
     ##
-    pathType: ImplementationSpecific
+    pathType: Prefix
     ## @param console.ingress.annotations Additional annotations for the Ingress resource. To enable certificate auto-generation, place here your cert-manager annotations.
     ## For a full list of possible ingress annotations, please see
     ## ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md

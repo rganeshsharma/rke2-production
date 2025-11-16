@@ -132,11 +132,71 @@ MinIO has become essential infrastructure in modern Kubernetes deployments, espe
 
 ## Deploy Minio from https://artifacthub.io/packages/helm/bitnami/minio?modal=install 
 
+## Create secret for admin user 
+
+
+
 ```bash
+kubectl -n minio create secret generic minio-creds \
+    --from-literal=username=admin \
+    --from-literal=password=P@ssw0rd@123
 
 helm repo add bitnami https://charts.bitnami.com/bitnami 
 
 helm install minio bitnami/minio --version 17.0.21 -f values-minio.yaml
 
 helm pull oci://registry-1.docker.io/bitnamicharts/minio --version 17.0.21
+```
+
+## Successful Installation output:
+```bash
+helm install minio bitnami/minio --version 17.0.21 -f values.yaml -n minio
+NAME: minio
+LAST DEPLOYED: Sat Nov 15 13:14:57 2025
+NAMESPACE: minio
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+CHART NAME: minio
+CHART VERSION: 17.0.21
+APP VERSION: 2025.7.23
+
+⚠ WARNING: Since August 28th, 2025, only a limited subset of images/charts are available for free.
+    Subscribe to Bitnami Secure Images to receive continued support and security updates.
+    More info at https://bitnami.com and https://github.com/bitnami/containers/issues/83267
+
+** Please be patient while the chart is being deployed **
+
+Minio(R) can be accessed via port 9000 on the following DNS name from within your cluster:
+
+   minio.minio.svc.cluster.local
+
+To get your credentials run:
+
+   export ROOT_USER=$(kubectl get secret --namespace minio minio-creds -o jsonpath="{.data.root-user}" | base64 -d)
+   export ROOT_PASSWORD=$(kubectl get secret --namespace minio minio-creds -o jsonpath="{.data.root-password}" | base64 -d)
+
+To connect to your Minio(R) server using a client:
+
+- Run a Minio(R) Client pod and append the desired command (e.g. 'admin info'):
+
+   kubectl run --namespace minio minio-client \
+     --rm --tty -i --restart='Never' \
+     --env MINIO_SERVER_ROOT_USER=$ROOT_USER \
+     --env MINIO_SERVER_ROOT_PASSWORD=$ROOT_PASSWORD \
+     --env MINIO_SERVER_HOST=minio \
+     --image docker.io/bitnami/minio-client:2025.7.21-debian-12-r2 -- admin info minio
+
+To access the Minio(R) Console:
+
+- Get the Minio(R) Console URL:
+
+   echo "Minio(R) Console URL: http://127.0.0.1:9090"
+   kubectl port-forward --namespace minio svc/minio-console 9090:9090
+
+WARNING: There are "resources" sections in the chart not set. Using "resourcesPreset" is not recommended for production. For production installations, please set the following values according to your workload needs:
+  - resources
+  - console.resources
++info https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 ```

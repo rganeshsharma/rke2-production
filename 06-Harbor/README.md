@@ -339,6 +339,8 @@ This makes Harbor a **recommended and trusted choice** for enterprise container 
    ```bash
    helm repo add harbor https://helm.goharbor.io
    helm install harbor harbor/harbor -n harbor
+   helm fetch harbor/harbor --version 1.18.0 --untar
+   cd harbor
    ```
 
 2. **Docker Compose** (Development/Testing)

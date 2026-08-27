@@ -6,6 +6,37 @@ TLS certificates from various issuing sources.
 It will ensure certificates are valid and up to date periodically, and attempt
 to renew certificates at an appropriate time before expiry.
 
+
+## Architecture for TLS and Routing Management 
+
+# ARCHITECTURE
+
+                    Private DNS
+                  *.apps.domain.com
+                         |
+                         v
+                 Envoy Gateway API 
+                  10.X.X.X VIP (Load Balancer)
+                         |
+              +----------+----------+
+              |          |          |
+           Argo CD     Harbor     Agentic Apps
+              |          |          |
+              +----------+----------+
+                         |
+                    TLS Secrets
+                         ^
+                         |
+                    cert-manager
+                         |
+                 ClusterIssuer
+                         |
+               Intermediate CA
+                         |
+                    Root CA
+                         |
+                 TRUSTED BY CLIENTS
+
 ## Prerequisites
 
 - Kubernetes 1.22+

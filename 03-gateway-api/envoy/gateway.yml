@@ -1,0 +1,39 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-shared-gateway
+  namespace: gateway-system
+  annotations:
+    cert-manager.io/cluster-issuer: ca-issuer
+
+spec:
+  gatewayClassName: envoy
+
+  addresses:
+    - type: IPAddress
+      value: 10.25.83.200
+
+  listeners:
+
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.dev.yourdomain.com"
+
+      allowedRoutes:
+        namespaces:
+          from: All
+
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.dev.yourdomain.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: wildcard-tls-cert
+
+      allowedRoutes:
+        namespaces:
+          from: All

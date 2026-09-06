@@ -1,7 +1,7 @@
 # Envoy Architecture:
 ```
                     Internal DNS
-                 *.dai.dev.mindsparks.io
+                 *.dev.yourdomain.com
                        |
                        v
               MetalLB VIP / LB IP

@@ -1,13 +1,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: dai-wildcard-tls
+  name: wildcard-tls-cert
   namespace: gateway-system
 spec:
-  secretName: dai-wildcard-tls
+  secretName: wildcard-tls-cert
 
   dnsNames:
-    - "*.dev.mindsparks.io"
+    - "*.dev.yourdomain.com"
 
   issuerRef:
     name: ca-issuer

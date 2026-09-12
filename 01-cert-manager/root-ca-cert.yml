@@ -1,17 +1,34 @@
----
 apiVersion: cert-manager.io/v1
 kind: Certificate
+
 metadata:
-  name: root-ra
+  name: killa-root-ca
   namespace: cert-manager
+
 spec:
   isCA: true
-  commonName: root-ra
-  secretName: root-ra-secret
+  commonName: Killa Platform Root CA
+
+  subject:
+    organizations:
+      - Killa
+    organizationalUnits:
+      - Platform Engineering
+
+  secretName: killa-root-ca
+
+  dnsNames:
+    - '*.apps.killa.io'
+    - 'apps.killa.io'
+
+  duration: 87600h
+  renewBefore: 8760h
+
   privateKey:
     algorithm: ECDSA
-    size: 256
+    size: 384
+
   issuerRef:
-    name: selfsigned-issuer
+    name: selfsigned-bootstrap
     kind: ClusterIssuer
     group: cert-manager.io

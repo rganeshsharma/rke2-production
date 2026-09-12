@@ -122,11 +122,39 @@ BGP Mode Architecture:
 # Add official MetalLB repo
 helm repo add metallb https://metallb.github.io/metallb
 helm repo update
+```
+```yaml
+# metallb-values.yaml
+speaker:
+  enabled: true
 
+  frr:
+    enabled: false
+
+controller:
+  enabled: true
+
+frrk8s:
+  enabled: false
+
+crds:
+  enabled: true
+
+prometheus:
+  scrapeAnnotations: false
+  podMonitor:
+    enabled: false
+  serviceMonitor:
+    enabled: false
+```
+
+```bash
 # Install MetalLB
-helm install metallb metallb/metallb \
+helm upgrade --install metallb metallb/metallb \
   --namespace metallb-system \
-  --create-namespace
+  --create-namespace \
+  --version 0.16.1 \
+  -f metallb-values.yaml
 
 # Wait for MetalLB pods to be ready
 kubectl wait --namespace metallb-system \
